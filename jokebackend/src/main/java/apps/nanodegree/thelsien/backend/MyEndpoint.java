@@ -6,6 +6,7 @@
 
 package apps.nanodegree.thelsien.backend;
 
+import com.example.JokeProvider;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -37,4 +38,13 @@ public class MyEndpoint {
         return response;
     }
 
+    @ApiMethod(name = "getJoke")
+    public MyBean getJoke() {
+        MyBean response = new MyBean();
+        JokeProvider provider = JokeProvider.getInstance();
+
+        response.setData(provider.getJoke());
+
+        return response;
+    }
 }

@@ -7,12 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.JokeProvider;
-
 import apps.nanodegree.thelsien.jokeviewer.JokeViewerActivity;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements JokeQueryAsyncTask.OnJokeQueryListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +42,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void tellJoke(View view) {
-        JokeProvider jokeProvider = JokeProvider.getInstance();
-        String joke = jokeProvider.getJoke();
+        JokeQueryAsyncTask asyncTask = new JokeQueryAsyncTask(this);
+        asyncTask.execute();
+    }
 
+    @Override
+    public void onJokeQueryFinished(String joke) {
         Intent intent = new Intent(this, JokeViewerActivity.class);
         intent.putExtra(JokeViewerActivity.INTENT_JOKE_STRING_EXTRA, joke);
 
