@@ -43,3 +43,13 @@ dependencies {
     compile project(':jokeviewer')
     compile project(path: ':jokebackend', configuration: 'android-endpoints')
 }
+
+task runServerAndAndroidTests {
+    dependsOn ':jokebackend:appengineRun'
+    doFirst {
+        connectedCheck
+    }
+    doLast {
+        ':jokebackend:appengineStop'
+    }
+}
