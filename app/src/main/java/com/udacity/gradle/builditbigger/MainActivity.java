@@ -1,5 +1,6 @@
 package com.udacity.gradle.builditbigger;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -12,10 +13,17 @@ import apps.nanodegree.thelsien.jokeviewer.JokeViewerActivity;
 
 public class MainActivity extends ActionBarActivity implements JokeQueryAsyncTask.OnJokeQueryListener {
 
+    private ProgressDialog mLoadingDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mLoadingDialog = new ProgressDialog(this);
+        mLoadingDialog.setTitle(R.string.loading_dialog_title);
+        mLoadingDialog.setMessage(getString(R.string.loading_dialog_message));
+        mLoadingDialog.setCancelable(false);
     }
 
 
@@ -42,12 +50,16 @@ public class MainActivity extends ActionBarActivity implements JokeQueryAsyncTas
     }
 
     public void tellJoke(View view) {
+        mLoadingDialog.show();
         JokeQueryAsyncTask asyncTask = new JokeQueryAsyncTask(this);
         asyncTask.execute();
     }
 
     @Override
     public void onJokeQueryFinished(String joke) {
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
         Intent intent = new Intent(this, JokeViewerActivity.class);
         intent.putExtra(JokeViewerActivity.INTENT_JOKE_STRING_EXTRA, joke);
 

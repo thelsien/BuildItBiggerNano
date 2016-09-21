@@ -1,5 +1,6 @@
 package com.udacity.gradle.builditbigger.free;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ public class MainActivityFragment extends Fragment implements JokeQueryAsyncTask
 
     private InterstitialAd mInterstitialAd;
     private String mJokeString;
+    private ProgressDialog mLoadingDialog;
 
     public MainActivityFragment() {
     }
@@ -38,6 +40,7 @@ public class MainActivityFragment extends Fragment implements JokeQueryAsyncTask
         View root = inflater.inflate(R.layout.fragment_main, container, false);
 
         setupInterstitialAd();
+        setupLoadingDialog();
 
         Button jokeButton = ((Button) root.findViewById(R.id.btn_joke));
         TextView flavorView = ((TextView) root.findViewById(R.id.tv_flavor));
@@ -46,6 +49,7 @@ public class MainActivityFragment extends Fragment implements JokeQueryAsyncTask
         jokeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mLoadingDialog.show();
                 JokeQueryAsyncTask asyncTask = new JokeQueryAsyncTask(MainActivityFragment.this);
                 asyncTask.execute();
             }
@@ -60,6 +64,13 @@ public class MainActivityFragment extends Fragment implements JokeQueryAsyncTask
                 .build();
         mAdView.loadAd(adRequest);
         return root;
+    }
+
+    private void setupLoadingDialog() {
+        mLoadingDialog = new ProgressDialog(getActivity());
+        mLoadingDialog.setTitle(R.string.loading_dialog_title);
+        mLoadingDialog.setMessage(getString(R.string.loading_dialog_message));
+        mLoadingDialog.setCancelable(false);
     }
 
     private void setupInterstitialAd() {
@@ -93,6 +104,7 @@ public class MainActivityFragment extends Fragment implements JokeQueryAsyncTask
     private void requestNewInterstitialAd() {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("80FD7A9E7A68FAA22A5B719A2E01586F")
                 .addTestDevice("40B5B05168077AB3541339D5C34035BC")
                 .build();
 
@@ -103,6 +115,11 @@ public class MainActivityFragment extends Fragment implements JokeQueryAsyncTask
     @Override
     public void onJokeQueryFinished(String joke) {
         mJokeString = joke;
+
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
+
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         } else {
