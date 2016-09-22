@@ -6,4 +6,5 @@
     <string name="flavor_text">This is the <xliff:g name="flavorname">%s</xliff:g> flavor version.</string>
     <string name="loading_dialog_title">Loading</string>
     <string name="loading_dialog_message">Please wait…</string>
+    <string name="no_joke_returned_error">The server is unavailable or no joke was get by the server.</string>
 </resources>

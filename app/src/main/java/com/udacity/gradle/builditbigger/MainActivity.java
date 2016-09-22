@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import apps.nanodegree.thelsien.jokeviewer.JokeViewerActivity;
 
@@ -60,6 +61,12 @@ public class MainActivity extends ActionBarActivity implements JokeQueryAsyncTas
         if (mLoadingDialog != null) {
             mLoadingDialog.dismiss();
         }
+
+        if (joke == null) {
+            Toast.makeText(this, R.string.no_joke_returned_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Intent intent = new Intent(this, JokeViewerActivity.class);
         intent.putExtra(JokeViewerActivity.INTENT_JOKE_STRING_EXTRA, joke);
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -27,6 +28,7 @@ import apps.nanodegree.thelsien.jokeviewer.JokeViewerActivity;
  */
 public class MainActivityFragment extends Fragment implements JokeQueryAsyncTask.OnJokeQueryListener {
 
+    public boolean mIsInterstitialLoaded = false;
     private InterstitialAd mInterstitialAd;
     private String mJokeString;
     private ProgressDialog mLoadingDialog;
@@ -81,7 +83,7 @@ public class MainActivityFragment extends Fragment implements JokeQueryAsyncTask
             @Override
             public void onAdLoaded() {
                 super.onAdLoaded();
-                Log.d("MainActivityFragment", "onAdLoaded");
+                mIsInterstitialLoaded = true;
             }
 
             @Override
@@ -108,17 +110,23 @@ public class MainActivityFragment extends Fragment implements JokeQueryAsyncTask
                 .addTestDevice("40B5B05168077AB3541339D5C34035BC")
                 .build();
 
+        mIsInterstitialLoaded = false;
         mInterstitialAd.loadAd(adRequest);
 
     }
 
     @Override
     public void onJokeQueryFinished(String joke) {
-        mJokeString = joke;
-
         if (mLoadingDialog != null) {
             mLoadingDialog.dismiss();
         }
+
+        if (joke == null) {
+            Toast.makeText(getActivity(), R.string.no_joke_returned_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mJokeString = joke;
 
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
